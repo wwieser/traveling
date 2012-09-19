@@ -17,40 +17,32 @@
 
 function getLocation()
 {
-	alert(document.getElementById("address").innerHTML);
-	alert(document.getElementById("citystatezip").innerHTML);
 	var geocoder = new google.maps.Geocoder();
 	var finalAddress = document.getElementById("address").innerHTML + " " + document.getElementById("citystatezip").innerHTML; 
 	
 	geocoder.geocode( { 'address': finalAddress}, function(results, status) {
-		
 	
 	if (status == google.maps.GeocoderStatus.OK) {
-		var latitude = results[0].geometry.location.lat();
-		var longitude = results[0].geometry.location.lng();
-	    alert(latitude + " " + longitude);
-	    } 
+		var map = new google.maps.Map(document.getElementById('map_canvas'), {
+		      mapTypeId: google.maps.MapTypeId.ROADMAP,
+		      center: results[0].geometry.location,
+		      zoom: 15
+		    });
+		var marker =  new google.maps.Marker({
+		     map: map,
+		     position: results[0].geometry.location
+		   });
+		} 
+	else
+		{
+			alert("Problem accessing the map, please reload the page and try again.")
+		}
 	});
+	
+	
 }
 </script>
 
-<script>
-function initialize() {
-    var map = new google.maps.Map(document.getElementById('map_canvas'), {
-      mapTypeId: google.maps.MapTypeId.ROADMAP,
-      center: new google.maps.LatLng(0, 0),
-      zoom: 15
-    });
-
-var marker =  new google.maps.Marker({
-          map: map,
-          position: new google.maps.LatLng(0, 0)
-        });
-
-
-            initialize();
-
-</script>
 
 <h1>${hotel.name}</h1>
 <address>
@@ -73,4 +65,5 @@ var marker =  new google.maps.Marker({
 	</div>
 </form>
 
-<div id="map_canvas"></div>
+<div id="map_canvas" style="width: 500px; height: 500px;"></div>
+  
