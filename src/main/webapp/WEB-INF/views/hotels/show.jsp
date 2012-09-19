@@ -4,8 +4,8 @@
 
 <style>
       #map_canvas {
-        height: 400px;
-        width: 600px;
+        height: 500px;
+        width: 500px;
         border: 1px solid #333;
         margin-top: 0.6em;
       }
@@ -15,32 +15,34 @@
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 <script type="text/javascript">
 
-function getLocation()
-{
-	var geocoder = new google.maps.Geocoder();
-	var finalAddress = document.getElementById("address").innerHTML + " " + document.getElementById("citystatezip").innerHTML; 
+	function getLocation()
+	{
+		var geocoder = new google.maps.Geocoder();
+		var finalAddress = document.getElementById("address").innerHTML + " " + document.getElementById("citystatezip").innerHTML; 
+		
+		geocoder.geocode( { 'address': finalAddress}, function(results, status) {
+		
+		if (status == google.maps.GeocoderStatus.OK) {
+			var map = new google.maps.Map(document.getElementById('map_canvas'), {
+			      mapTypeId: google.maps.MapTypeId.ROADMAP,
+			      center: results[0].geometry.location,
+			      zoom: 15
+			    });
+			var marker =  new google.maps.Marker({
+			     map: map,
+			     position: results[0].geometry.location
+			   });
+			} 
+		else
+			{
+				alert("Problem accessing the map, please reload the page and try again.")
+			}
+		});
+		
+		
+	}
 	
-	geocoder.geocode( { 'address': finalAddress}, function(results, status) {
-	
-	if (status == google.maps.GeocoderStatus.OK) {
-		var map = new google.maps.Map(document.getElementById('map_canvas'), {
-		      mapTypeId: google.maps.MapTypeId.ROADMAP,
-		      center: results[0].geometry.location,
-		      zoom: 15
-		    });
-		var marker =  new google.maps.Marker({
-		     map: map,
-		     position: results[0].geometry.location
-		   });
-		} 
-	else
-		{
-			alert("Problem accessing the map, please reload the page and try again.")
-		}
-	});
-	
-	
-}
+	google.maps.event.addDomListener(window, 'load', getLocation);
 </script>
 
 
@@ -53,7 +55,7 @@ function getLocation()
 	${hotel.country}
 </address>
 
-<body onload="getLocation();"> 
+
 <form action="booking" method="get">
 	<p>
 		Nightly Rate:
@@ -65,5 +67,9 @@ function getLocation()
 	</div>
 </form>
 
+<br /><br /><br />
+
 <div id="map_canvas"></div>
+
+<br /><br />
   
